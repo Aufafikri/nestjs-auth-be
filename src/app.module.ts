@@ -6,8 +6,6 @@ import { PrismaModule } from './lib/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/jwt.strategy';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './auth/jwt.auth.guard';
 
 @Module({
   imports: [
