@@ -13,8 +13,8 @@ async function bootstrap() {
 
   app.enableCors({
     origin: ["http://localhost:3000", "https://evstauth.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Accept"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Accept", "x-access-token", "Origin", "X-Requested-With"],
     credentials: true
   });
 
