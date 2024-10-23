@@ -1,11 +1,17 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './lib/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './auth/jwt.strategy';
+import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { LogMiddleware } from './log/log.middleware';
+import { UsersController } from './users/users.controller';
+import { MailsModule } from './mails/mails.module';
+import { GoogleStrategy } from './auth/strategies/google.strategy';
+import { ConfigModule } from '@nestjs/config';
+import { GithubStrategy } from './auth/strategies/github.strategy';
 
 @Module({
   imports: [
@@ -16,9 +22,14 @@ import { JwtStrategy } from './auth/jwt.strategy';
         expiresIn: process.env.JWT_EXPIRES_IN
       },
     }),
-    UsersModule, PrismaModule, AuthModule],
+
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+
+    UsersModule, PrismaModule, AuthModule, MailsModule],
   controllers: [AppController],
-  providers: [AppService, JwtStrategy],
+  providers: [AppService, JwtStrategy, GoogleStrategy, GithubStrategy],
   exports: [JwtModule]
 })
 

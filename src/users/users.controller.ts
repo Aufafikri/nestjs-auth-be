@@ -6,10 +6,12 @@ import {
   Post,
   Request,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dto/create-users.dto';
-import { JwtAuthGuard } from '../auth/jwt.auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { GetProfileUserInterceptor } from './interceptors/getPorifleUser.interceptor';
 
 @Controller('users')
 export class UsersController {
@@ -19,9 +21,10 @@ export class UsersController {
   public async getAllUsers() {
     return this.usersService.getAllUsers();
   }
-
+  
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
+  @UseInterceptors(GetProfileUserInterceptor)
   public async getUserById(@Request() req) {
     const userProfile = await this.usersService.getOneUserById(req.user.id);
     return userProfile;
@@ -42,6 +45,14 @@ export class UsersController {
 
   @Post('/register')
   public async register(@Body() user: CreateUsersDto) {
-    return this.usersService.createUser(user);
+    console.log('Register route hit');
+    try {
+      const result = await this.usersService.createUser(user);
+      console.log('User creation successful');
+      return result;
+    } catch (error) {
+      console.error('Error during user creation:', error);
+      throw error;
+    }
   }
 }

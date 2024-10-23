@@ -13,10 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum LoginMethod {
+  LOCAL
+  GOOGLE
+  GITHUB
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  username  String
+  id          String      @id @default(cuid())
+  username    String
+  email       String      @unique
+  password    String?
+  googleId    String?     @unique
+  githubId    String?     @unique
+  loginMethod LoginMethod @default(LOCAL)
+  isVerified  Boolean
+
   createdAt DateTime @default(now())
 }
