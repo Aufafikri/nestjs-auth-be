@@ -3,7 +3,6 @@ import { PrismaService } from 'src/lib/prisma.service';
 import { CreateUsersDto } from './dto/create-users.dto';
 import * as bcrypt from 'bcryptjs';
 import { MailsService } from 'src/mails/mails.service';
-import { GoogleUsersDto } from './dto/google-users.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -63,20 +62,9 @@ export class UsersService {
   
       return 'Email successfully verified';
     } catch (error) {
-      console.error('Token verification failed:', error.message); // Tambahkan logging untuk melihat error detail
+      console.error('Token verification failed:', error.message);
       throw new Error('Invalid or expired token');
     }
-  }
-
-  public async createUserWithGoogle(googleUserDto: GoogleUsersDto) {
-    return this.prisma.user.create({
-      data: {
-        googleId: googleUserDto.googleId,
-        email: googleUserDto.email,
-        username: googleUserDto.username,
-        isVerified: true
-      }
-    })
   }
 
   public async getOneUserEmail(email: string) {

@@ -1,13 +1,11 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './lib/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './auth/strategies/jwt.strategy';
-import { LogMiddleware } from './log/log.middleware';
-import { UsersController } from './users/users.controller';
+import { JwtStrategy } from './auth/strategies/jwt.strategy'
 import { MailsModule } from './mails/mails.module';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
 import { ConfigModule } from '@nestjs/config';
