@@ -4,12 +4,14 @@ import { CreateUsersDto } from './dto/create-users.dto';
 import * as bcrypt from 'bcryptjs';
 import { MailsService } from 'src/mails/mails.service';
 import { GoogleUsersDto } from './dto/google-users.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly mailsService: MailsService,
+    private readonly jwtService: JwtService
   ) {}
 
   public async getAllUsers() {
@@ -34,6 +36,36 @@ export class UsersService {
       message:
         'Registration successful. Please check your email for verification.',
     };
+  }
+
+  public async verifyEmail(token: string) {
+    try {
+      const payload = await this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+  
+      const user = await this.prisma.user.findUnique({
+        where: { id: payload.userId },
+      });
+  
+      if (!user) {
+        throw new Error('User not found');
+      }
+  
+      if (user.isVerified) {
+        return 'Email has already been verified';
+      }
+  
+      await this.prisma.user.update({
+        where: { id: payload.userId },
+        data: { isVerified: true },
+      });
+  
+      return 'Email successfully verified';
+    } catch (error) {
+      console.error('Token verification failed:', error.message); // Tambahkan logging untuk melihat error detail
+      throw new Error('Invalid or expired token');
+    }
   }
 
   public async createUserWithGoogle(googleUserDto: GoogleUsersDto) {

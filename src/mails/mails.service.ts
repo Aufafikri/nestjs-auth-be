@@ -17,6 +17,7 @@ export class MailsService {
   }
 
   private generateTokenVerification (userId: string) {
+    
     const payload = {
         userId
     }
@@ -38,12 +39,11 @@ export class MailsService {
         subject: 'Welcome! Please Verify Your Email Address!',
         html: `
         <div style="border: 2px solid gray; padding: 20px; border-radius: 10px;">
-            <h1>👋 Welcome to EvstStore!</h1>
+            <h1>👋 Welcome to Authentication!</h1>
             <p style="font-weight: bold;" >To complete your registration, please verify your email address by clicking the link below:</p>
             <a href="${verificationLink}" style="display: inline-block; padding: 10px 20px; margin: 10px 0; font-size: 16px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px;">
             Verifiy Email
             </a>
-            <p>Thanks for registration on my ecommerce application! 😊</p>
             </div>
         `
       })

@@ -26,6 +26,7 @@ model User {
   password    String?
   googleId    String?     @unique
   githubId    String?     @unique
+  profile     String?
   loginMethod LoginMethod @default(LOCAL)
   isVerified  Boolean
 
