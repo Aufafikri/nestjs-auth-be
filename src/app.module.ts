@@ -10,6 +10,8 @@ import { MailsModule } from './mails/mails.module';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { GithubStrategy } from './auth/strategies/github.strategy';
+import googleOauthConfig from './auth/config/google-oauth.config';
+import githubOauthConfig from './auth/config/github-oauth.config';
 
 @Module({
   imports: [
@@ -22,7 +24,8 @@ import { GithubStrategy } from './auth/strategies/github.strategy';
     }),
 
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      load: [googleOauthConfig, githubOauthConfig]
     }),
 
     UsersModule, PrismaModule, AuthModule, MailsModule],

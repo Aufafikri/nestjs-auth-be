@@ -1,15 +1,18 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from 'passport-github2'
 import { PrismaService } from "src/lib/prisma.service";
+import githubOauthConfig from "../config/github-oauth.config";
+import { ConfigType } from "@nestjs/config";
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
-    constructor(private readonly prisma: PrismaService) {
+    constructor(private readonly prisma: PrismaService, 
+        @Inject(githubOauthConfig.KEY) private readonly githubConfiguration: ConfigType<typeof githubOauthConfig> ) {
         super({
-            clientID: process.env.GITHUB_CLIENT_ID,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: process.env.GITHUB_CALLBACK_URL,
+            clientID: githubConfiguration.clientID,
+            clientSecret: githubConfiguration.clientSecret,
+            callbackURL: githubConfiguration.callbackURL,
             scope: ['user:email']
         })
     }

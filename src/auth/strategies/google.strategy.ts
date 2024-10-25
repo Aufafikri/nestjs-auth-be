@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { PrismaService } from 'src/lib/prisma.service';
+import googleOauthConfig from '../config/google-oauth.config';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(googleOauthConfig.KEY) private readonly googleConfiguration: ConfigType<typeof googleOauthConfig>,
+  ) {
     super({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      clientID: googleConfiguration.clientID,
+      clientSecret: googleConfiguration.clientSecret,
+      callbackURL: googleConfiguration.callbackURL,
       scope: ['email', 'profile'],
     });
   }
@@ -20,21 +25,21 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    const { id, emails, displayName } = profile
+    const { id, emails, displayName } = profile;
 
     const existingUser = await this.prisma.user.findUnique({
       where: {
-        googleId: id
-      }
-    })
+        googleId: id,
+      },
+    });
 
-    if(existingUser) {
+    if (existingUser) {
       const payload = {
         user: existingUser,
-        accessToken
-      }
+        accessToken,
+      };
 
-      return done(null, payload)
+      return done(null, payload);
     } else {
       const newUser = await this.prisma.user.create({
         data: {
@@ -42,16 +47,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
           email: emails[0].value,
           username: displayName,
           isVerified: true,
-          loginMethod: 'GOOGLE'
-        }
-      })
+          loginMethod: 'GOOGLE',
+        },
+      });
 
       const payload = {
         user: newUser,
-        accessToken
-      }
+        accessToken,
+      };
 
-      done(null, payload)
+      done(null, payload);
     }
   }
 }
