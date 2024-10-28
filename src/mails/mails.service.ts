@@ -1,17 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import * as jwt from 'jsonwebtoken';
+import gmailConfig from 'src/auth/config/gmail.config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class MailsService {
   private transporter;
 
-  constructor() {
+  constructor(@Inject(gmailConfig.KEY) private readonly gmailConfiguration: ConfigType<typeof gmailConfig>) {
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
+        user: gmailConfiguration.user,
+        pass: gmailConfiguration.pass,
       },
     });
   }

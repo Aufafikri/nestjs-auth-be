@@ -34,8 +34,8 @@ export class AuthController {
   public async googleLoginRedirect(@Req() req, @Res() res: Response) {
       const user = req.user.user
       const accessToken = this.jwtService.sign({ sub: user.id, email: user.email })
-      
-      res.redirect(`http://localhost:3000/verification/google-callback?token=${accessToken}`)
+
+      res.redirect(`http://localhost:3000/verification/google-callback?token=${accessToken}`);
   }
 
   @Get('github/login')
