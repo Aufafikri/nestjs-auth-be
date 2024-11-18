@@ -26,8 +26,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(GetProfileUserInterceptor)
   public async getUserById(@Request() req: any) {
-    const userProfile = await this.usersService.getOneUserById(req.user.id);
-    return userProfile;
+    return await this.usersService.getOneUserById(req.user.id)
   }
 
   @Get('/:id')
