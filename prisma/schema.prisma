@@ -30,5 +30,19 @@ model User {
   loginMethod LoginMethod @default(LOCAL)
   isVerified  Boolean
 
+  RefreshToken RefreshToken[]
+
   createdAt DateTime @default(now())
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  userId String
+  User User @relation(fields: [userId], references: [id])
+
+  @@index([expiresAt, userId])
 }

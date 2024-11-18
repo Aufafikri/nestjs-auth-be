@@ -22,8 +22,8 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
   
-  @UseGuards(JwtAuthGuard)
   @Get('/profile')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(GetProfileUserInterceptor)
   public async getUserById(@Request() req: any) {
     const userProfile = await this.usersService.getOneUserById(req.user.id);
